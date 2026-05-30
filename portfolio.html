@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kurtis Daems — AI Builder Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:          #032D60;
+      --navy-card:     #0D3880;
+      --navy-hover:    #164194;
+      --brand-blue:    #0176D3;
+      --cyan:          #00A9E0;
+      --white:         #FFFFFF;
+      --light-bg:      #F3F7FC;
+      --light-border:  #C8D9EF;
+      --body:          #3E3E3C;
+      --headline:      #032D60;
+      --muted:         #5A6B7A;
+      --muted-on-dark: rgba(255,255,255,0.70);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--white);
+      color: var(--body);
+      line-height: 1.6;
+    }
+
+    /* ─── AURORA CANVAS ──────────────────────────────── */
+    #aurora-canvas {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: -1; pointer-events: none;
+    }
+
+    /* ─── NAV ────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 16px 48px;
+      background: rgba(255,255,255,0.93);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(3,45,96,0.08);
+      transition: box-shadow 0.3s;
+    }
+    nav.scrolled { box-shadow: 0 2px 20px rgba(3,45,96,0.1); }
+    .nav-logo {
+      font-weight: 800; font-size: 0.95rem;
+      color: var(--navy); text-decoration: none; letter-spacing: -0.01em;
+    }
+    .nav-links { display: flex; gap: 32px; list-style: none; align-items: center; }
+    .nav-links a {
+      color: var(--muted); text-decoration: none;
+      font-size: 0.875rem; font-weight: 500; transition: color 0.15s;
+    }
+    .nav-links a:hover { color: var(--brand-blue); }
+    .nav-cta { background: var(--brand-blue) !important; color: #fff !important; padding: 8px 20px; border-radius: 6px; }
+    .nav-cta:hover { background: #0161b3 !important; }
+    @media (max-width: 640px) { .nav-links { display: none; } nav { padding: 14px 20px; } }
+
+    /* ─── SECTION SHELLS ─────────────────────────────── */
+    .s-dark  { background: var(--navy);    color: var(--white); }
+    .s-light { background: var(--white);   color: var(--body);  }
+    .s-soft  { background: var(--light-bg); color: var(--body); }
+
+    .s-inner { max-width: 1200px; margin: 0 auto; padding: 96px 48px; }
+    .eyebrow {
+      font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 12px;
+    }
+    .s-dark  .eyebrow { color: var(--cyan); }
+    .s-light .eyebrow,
+    .s-soft  .eyebrow { color: var(--brand-blue); }
+
+    .s-heading {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800; line-height: 1.12;
+      letter-spacing: -0.03em; margin-bottom: 48px;
+    }
+    .s-dark  .s-heading { color: var(--white); }
+    .s-light .s-heading,
+    .s-soft  .s-heading { color: var(--headline); }
+
+    @media (max-width: 640px) { .s-inner { padding: 64px 20px; } }
+
+    /* ─── HERO ───────────────────────────────────────── */
+    #hero {
+      padding: 148px 24px 72px;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      text-align: center;
+      background: var(--navy); position: relative; overflow: hidden;
+    }
+    #hero::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(ellipse 90% 60% at 50% 50%,
+        rgba(1,118,211,0.25) 0%, transparent 68%);
+    }
+    .hero-badge {
+      display: inline-block;
+      font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--cyan); border: 1px solid rgba(0,169,224,0.4);
+      padding: 6px 20px; border-radius: 100px; margin-bottom: 24px;
+    }
+    .hero-name {
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      font-weight: 800; letter-spacing: -0.03em; line-height: 1.0;
+      color: var(--white); margin-bottom: 16px;
+    }
+    .hero-sub {
+      font-size: clamp(0.95rem, 1.8vw, 1.1rem);
+      color: var(--cyan); font-weight: 500;
+      max-width: 600px; line-height: 1.5;
+    }
+    .hero-scroll {
+      margin-top: 40px;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      color: rgba(255,255,255,0.3); font-size: 0.63rem;
+      letter-spacing: 0.2em; text-transform: uppercase;
+    }
+    .hero-scroll::after {
+      content: ''; width: 1px; height: 32px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.3), transparent);
+      animation: spulse 2s ease-in-out infinite;
+    }
+    @keyframes spulse { 0%,100%{opacity:0.2} 50%{opacity:0.8} }
+
+    /* ─── ABOUT ──────────────────────────────────────── */
+    .about-body {
+      font-size: clamp(1rem, 1.55vw, 1.15rem);
+      color: var(--body); line-height: 1.85; max-width: 700px;
+    }
+
+    /* ─── WORK ───────────────────────────────────────── */
+    .work-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 20px;
+    }
+    .work-card {
+      background: var(--navy-card); border-radius: 16px; padding: 32px;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .work-card:hover { background: var(--navy-hover); transform: translateY(-3px); }
+    .work-num {
+      font-size: 0.62rem; font-weight: 700;
+      letter-spacing: 0.2em; color: var(--cyan); margin-bottom: 16px;
+    }
+    .work-card h3 { font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 10px; }
+    .work-card p  { font-size: 0.875rem; color: var(--muted-on-dark); line-height: 1.7; }
+
+    /* ─── AI PROJECTS ────────────────────────────────── */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 18px;
+    }
+    .project-card {
+      background: var(--white); border: 1px solid var(--light-border);
+      border-radius: 14px; padding: 26px;
+      display: flex; flex-direction: column; gap: 10px;
+      position: relative; overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    }
+    .project-card::after {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--brand-blue), var(--cyan));
+      opacity: 0; transition: opacity 0.2s;
+    }
+    .project-card:hover {
+      border-color: var(--brand-blue);
+      box-shadow: 0 6px 28px rgba(1,118,211,0.1);
+      transform: translateY(-2px);
+    }
+    .project-card:hover::after { opacity: 1; }
+    .project-card.placeholder { border-style: dashed; opacity: 0.4; }
+    .project-card.placeholder:hover { transform: none; box-shadow: none; border-color: var(--light-border); opacity: 0.55; }
+    .project-card.placeholder:hover::after { opacity: 0; }
+
+    .project-pill {
+      display: inline-block; align-self: flex-start;
+      font-size: 0.62rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--brand-blue);
+      background: rgba(1,118,211,0.08);
+      border: 1px solid rgba(1,118,211,0.2);
+      padding: 3px 10px; border-radius: 100px;
+    }
+    .project-pill.live {
+      color: #0a7c42; background: rgba(10,124,66,0.08);
+      border-color: rgba(10,124,66,0.22);
+    }
+    .project-card h3 { font-size: 1rem; font-weight: 700; color: var(--headline); line-height: 1.35; }
+    .project-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.6; flex: 1; }
+    .project-links { display: flex; gap: 16px; margin-top: 4px; }
+    .project-link {
+      font-size: 0.78rem; font-weight: 600;
+      color: var(--brand-blue); cursor: pointer;
+      text-decoration: none; border: none; background: none; padding: 0;
+      display: inline-flex; align-items: center; gap: 4px;
+      transition: color 0.15s; font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .project-link:hover { color: var(--navy); }
+    .project-link svg { width: 11px; height: 11px; flex-shrink: 0; }
+
+    /* ─── CONTACT ────────────────────────────────────── */
+    #contact .s-inner {
+      display: flex; flex-direction: column;
+      align-items: center; text-align: center; gap: 20px;
+    }
+    #contact h2 {
+      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+      font-weight: 800; letter-spacing: -0.025em; color: var(--white);
+    }
+    #contact .sub { color: var(--muted-on-dark); font-size: 1rem; max-width: 440px; }
+    .contact-links { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; margin-top: 8px; }
+    .cbtn {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 13px 28px; border-radius: 8px;
+      font-size: 0.9rem; font-weight: 600; text-decoration: none;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .cbtn.primary { background: var(--brand-blue); color: #fff; border: none; }
+    .cbtn.primary:hover { background: #0161b3; }
+    .cbtn.secondary { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,0.32); }
+    .cbtn.secondary:hover { border-color: #fff; background: rgba(255,255,255,0.07); }
+    .cbtn svg { width: 17px; height: 17px; flex-shrink: 0; }
+    .copyright { color: rgba(255,255,255,0.25); font-size: 0.78rem; margin-top: 12px; }
+
+    /* ─── MODAL ──────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(3,45,96,0.72);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px; opacity: 0; pointer-events: none;
+      transition: opacity 0.22s ease;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal {
+      background: var(--white); border-radius: 16px;
+      max-width: 780px; width: 100%; max-height: 88vh;
+      display: flex; flex-direction: column; overflow: hidden;
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.25s cubic-bezier(0.34, 1.2, 0.64, 1);
+      box-shadow: 0 24px 64px rgba(3,45,96,0.22);
+    }
+    .modal-overlay.open .modal { transform: translateY(0) scale(1); }
+
+    .modal-hdr {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      gap: 16px; padding: 26px 32px 20px;
+      border-bottom: 1px solid var(--light-border); flex-shrink: 0;
+    }
+    .modal-hdr-left { display: flex; flex-direction: column; gap: 4px; }
+    .modal-ey {
+      font-size: 0.63rem; font-weight: 700;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--brand-blue);
+    }
+    .modal-hdr h3 { font-size: 1.3rem; font-weight: 800; color: var(--headline); line-height: 1.25; }
+    .modal-x {
+      width: 32px; height: 32px; flex-shrink: 0;
+      border-radius: 8px; border: 1px solid var(--light-border);
+      background: none; color: var(--muted); cursor: pointer; font-size: 0.85rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+    }
+    .modal-x:hover { border-color: var(--brand-blue); color: var(--brand-blue); background: rgba(1,118,211,0.06); }
+    .modal-body { overflow-y: auto; padding: 28px 32px 32px; flex: 1; }
+
+    /* Modal inner components */
+    .coming-soon {
+      min-height: 110px; display: flex; align-items: center; justify-content: center;
+      border: 2px dashed var(--light-border); border-radius: 10px;
+      padding: 32px; color: var(--muted); font-size: 0.875rem;
+    }
+    .steps { display: flex; flex-direction: column; gap: 22px; }
+    .step  { display: flex; gap: 16px; align-items: flex-start; }
+    .step-n {
+      width: 34px; height: 34px; flex-shrink: 0; border-radius: 50%;
+      background: var(--brand-blue); color: #fff;
+      font-size: 0.8rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .step-body h4 { font-size: 0.97rem; font-weight: 700; color: var(--headline); margin-bottom: 5px; }
+    .step-body p  { font-size: 0.86rem; color: var(--muted); line-height: 1.65; }
+    .step-body code {
+      background: rgba(1,118,211,0.08); border: 1px solid rgba(1,118,211,0.18);
+      color: var(--brand-blue); font-family: monospace; font-size: 0.82rem;
+      padding: 1px 7px; border-radius: 4px;
+    }
+    .ds-block { margin-bottom: 32px; }
+    .ds-block:last-child { margin-bottom: 0; }
+    .ds-label {
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--brand-blue); padding-bottom: 10px;
+      border-bottom: 2px solid rgba(1,118,211,0.14); margin-bottom: 16px;
+    }
+    .vibe-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .vibe-tag {
+      background: var(--navy); color: var(--white);
+      font-size: 0.8rem; font-weight: 700;
+      padding: 6px 18px; border-radius: 100px; letter-spacing: 0.04em;
+    }
+    .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+    .swatch { border-radius: 10px; overflow: hidden; border: 1px solid var(--light-border); }
+    .sw-color { height: 50px; }
+    .sw-info  { padding: 8px 10px; background: var(--white); }
+    .sw-name  { display: block; font-size: 0.75rem; font-weight: 700; color: var(--headline); }
+    .sw-hex   { font-size: 0.7rem; font-family: monospace; color: var(--muted); }
+    .sw-use   { font-size: 0.66rem; color: var(--muted); margin-top: 2px; line-height: 1.4; }
+    .type-samples { display: flex; flex-direction: column; gap: 12px; }
+    .type-sample {
+      background: var(--light-bg); border-radius: 10px; padding: 14px 16px;
+      display: flex; align-items: baseline; justify-content: space-between;
+      gap: 12px; flex-wrap: wrap;
+    }
+    .type-spec { font-size: 0.7rem; color: var(--muted); font-family: monospace; white-space: nowrap; flex-shrink: 0; }
+    .layout-list { display: flex; flex-direction: column; gap: 10px; }
+    .layout-row  { display: flex; gap: 12px; align-items: flex-start; }
+    .l-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--brand-blue); flex-shrink: 0; margin-top: 8px; }
+    .layout-row p { font-size: 0.875rem; color: var(--body); line-height: 1.65; }
+    .docs-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+    @media (max-width: 540px) { .docs-cols { grid-template-columns: 1fr; } }
+    .docs-col h4 {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--brand-blue); padding-bottom: 10px;
+      border-bottom: 2px solid rgba(1,118,211,0.14); margin-bottom: 16px;
+    }
+    .docs-list { display: flex; flex-direction: column; gap: 12px; }
+    .docs-item { display: flex; gap: 10px; align-items: flex-start; }
+    .d-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--brand-blue); flex-shrink: 0; margin-top: 8px; }
+    .docs-item p { font-size: 0.84rem; color: var(--body); line-height: 1.6; }
+    .docs-item code {
+      display: block; margin-top: 5px;
+      background: rgba(1,118,211,0.07); border: 1px solid rgba(1,118,211,0.16);
+      color: var(--brand-blue); font-family: monospace; font-size: 0.78rem;
+      padding: 6px 10px; border-radius: 6px; line-height: 1.55;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="aurora-canvas" aria-hidden="true"></canvas>
+
+<!-- NAV -->
+<nav id="nav">
+  <a class="nav-logo" href="#">Kurtis Daems</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#ai-projects">Projects</a></li>
+    <li><a href="#contact" class="nav-cta">Connect</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <span class="hero-badge">AI Builder Portfolio</span>
+  <h1 class="hero-name">Kurtis Daems</h1>
+  <p class="hero-sub">Product Growth &amp; GTM at Salesforce, building at the intersection of AI and enterprise strategy</p>
+  <div class="hero-scroll">Scroll</div>
+</section>
+
+<!-- ABOUT -->
+<section class="s-light" id="about">
+  <div class="s-inner">
+    <p class="eyebrow">About</p>
+    <h2 class="s-heading">A bit about me</h2>
+    <p class="about-body">I work in Product Growth and GTM strategy at Salesforce, focused on bringing the Agentic Enterprise to market. We are living through a real inflection point: AI agents are becoming core infrastructure for how companies sell, serve, and operate, and Salesforce is at the center of that shift with Agentforce, Slack, and a unified AI platform built for humans and agents to work together. My role sits at the intersection of product strategy and go-to-market execution, which means shaping how we position our AI capabilities, translating complex technology into compelling stories, and helping customers understand what is genuinely possible today. Outside of work, I build my own AI tools and automations to stay sharp, stay curious, and keep my thinking grounded in what actually works.</p>
+  </div>
+</section>
+
+<!-- WORK -->
+<section class="s-dark" id="work">
+  <div class="s-inner">
+    <p class="eyebrow">Work</p>
+    <h2 class="s-heading">What I'm focused on</h2>
+    <div class="work-grid">
+      <div class="work-card">
+        <div class="work-num">01</div>
+        <h3>AI-Augmented GTM Strategy</h3>
+        <p>Shaping how Salesforce brings the Agentic Enterprise story to market. I work across positioning, competitive intelligence, and content strategy, using AI to move faster and produce sharper output. The goal is helping customers and sales teams understand what agents can actually do for their business today.</p>
+      </div>
+      <div class="work-card">
+        <div class="work-num">02</div>
+        <h3>Personal Workflow Automation</h3>
+        <p>Building reusable AI skills, scheduled automations, and custom workflows that cut repetitive overhead and free up capacity for higher-leverage thinking. Every project in this portfolio is something I actually use day-to-day, which keeps it honest and grounded.</p>
+      </div>
+      <div class="work-card">
+        <div class="work-num">03</div>
+        <h3>Learning in Public</h3>
+        <p>Documenting what I build, what works, and what I would do differently, and sharing it openly. This portfolio is that record. Every card that moves from "Coming Soon" to "Live" represents a real session, a real problem, and a real build worth talking about.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AI PROJECTS -->
+<section class="s-soft" id="ai-projects">
+  <div class="s-inner">
+    <p class="eyebrow">AI Projects</p>
+    <h2 class="s-heading">Things I've built</h2>
+    <div class="projects-grid" id="projects-grid"></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="s-dark" id="contact">
+  <div class="s-inner">
+    <h2>Let's connect</h2>
+    <p class="sub">Happy to talk about AI, the Agentic Enterprise, GTM strategy, or what's worth building next.</p>
+    <div class="contact-links">
+      <a class="cbtn primary" href="mailto:kdaems@salesforce.com">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="4" width="20" height="16" rx="2.5"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+        </svg>
+        kdaems@salesforce.com
+      </a>
+      <a class="cbtn secondary" href="https://linkedin.com/in/kurtis-daems/" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/>
+          <rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
+        </svg>
+        LinkedIn
+      </a>
+    </div>
+    <p class="copyright">© 2026 Kurtis Daems</p>
+  </div>
+</section>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-heading">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-hdr-left">
+        <p class="modal-ey" id="modal-ey"></p>
+        <h3 id="modal-heading"></h3>
+      </div>
+      <button class="modal-x" id="modal-close" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+  // ─── Animation: Aurora + Particle Field (Option B) ────
+  (function () {
+    const canvas = document.getElementById('aurora-canvas');
+    const ctx    = canvas.getContext('2d');
+
+    // Aurora orbs — medium brightness, Salesforce blue palette
+    const ORBS = [
+      { xp:0.15, yp:0.20, r:0.60, hue:214, sat:88, speed:0.00009, phase:0.0 },
+      { xp:0.78, yp:0.14, r:0.52, hue:200, sat:78, speed:0.00007, phase:2.1 },
+      { xp:0.50, yp:0.62, r:0.63, hue:220, sat:84, speed:0.00011, phase:4.4 },
+      { xp:0.88, yp:0.56, r:0.46, hue:207, sat:72, speed:0.00008, phase:1.3 },
+      { xp:0.10, yp:0.80, r:0.44, hue:195, sat:68, speed:0.00006, phase:3.7 },
+    ];
+    const DRIFT = 0.09;
+
+    // Particles — slow upward drift
+    let W, H;
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    resize();
+    window.addEventListener('resize', resize, { passive: true });
+
+    const PARTICLES = Array.from({ length: 46 }, () => ({
+      x:       Math.random() * window.innerWidth,
+      y:       Math.random() * window.innerHeight,
+      r:       0.8 + Math.random() * 1.2,
+      vy:      0.22 + Math.random() * 0.28,
+      vx:      (Math.random() - 0.5) * 0.18,
+      opacity: 0.12 + Math.random() * 0.07,
+    }));
+
+    function draw(ts) {
+      ctx.clearRect(0, 0, W, H);
+
+      // Draw aurora orbs
+      ORBS.forEach(o => {
+        const t  = ts * o.speed + o.phase;
+        const cx = (o.xp + Math.sin(t * 1.3) * DRIFT) * W;
+        const cy = (o.yp + Math.cos(t * 0.9) * DRIFT) * H;
+        const r  = o.r * Math.max(W, H);
+        const a  = 0.09 + Math.sin(t * 0.7) * 0.022;
+        const g  = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+        g.addColorStop(0,   `hsla(${o.hue},${o.sat}%,58%,${a})`);
+        g.addColorStop(0.4, `hsla(${o.hue},${o.sat}%,44%,${a * 0.5})`);
+        g.addColorStop(1,   `hsla(${o.hue},${o.sat}%,30%,0)`);
+        ctx.fillStyle = g;
+        ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
+      });
+
+      // Draw particles
+      PARTICLES.forEach(p => {
+        p.y -= p.vy;
+        p.x += p.vx;
+        if (p.y < -4)  p.y = H + 4;
+        if (p.x < -4)  p.x = W + 4;
+        if (p.x > W+4) p.x = -4;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0, 169, 224, ${p.opacity})`;
+        ctx.fill();
+      });
+
+      requestAnimationFrame(draw);
+    }
+    requestAnimationFrame(draw);
+  })();
+
+  // ─── Nav scroll state ─────────────────────────────────
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 48);
+  }, { passive: true });
+
+  // ─── Popup content ────────────────────────────────────
+  const POPUP = {
+
+    'Design System Skill::build': `<div class="steps">
+      <div class="step">
+        <div class="step-n">1</div>
+        <div class="step-body">
+          <h4>Found an inspiration website</h4>
+          <p>Browsed to a site whose visual language I wanted to match (Salesforce.com, in this case) and took screenshots of the key sections: hero, feature cards, and content splits.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n">2</div>
+        <div class="step-body">
+          <h4>Used Claude to extract the design DNA</h4>
+          <p>Pasted the screenshots into Claude and asked it to analyze the page and extract a structured design system: primary and accent colors with hex codes, typography style and specs, layout approach, and 5 words that capture the overall vibe.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n">3</div>
+        <div class="step-body">
+          <h4>Used /skill-creator to turn it into a reusable skill</h4>
+          <p>Took the design system output and used <code>/skill-creator</code> to package it as a named Claude skill — a structured prompt file that encodes all the design rules so Claude can apply them consistently every time.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n">4</div>
+        <div class="step-body">
+          <h4>Now it works everywhere</h4>
+          <p>Type <code>/salesforce-design</code> in any Claude session and every build, full pages, components, layouts, automatically matches the style. No re-explaining the system each time.</p>
+        </div>
+      </div>
+    </div>`,
+
+    'Design System Skill::docs': `
+      <div class="ds-block">
+        <p class="ds-label">Vibe</p>
+        <div class="vibe-tags">
+          <span class="vibe-tag">Bold</span>
+          <span class="vibe-tag">Trusted</span>
+          <span class="vibe-tag">Spacious</span>
+          <span class="vibe-tag">Direct</span>
+          <span class="vibe-tag">Confident</span>
+        </div>
+      </div>
+      <div class="ds-block">
+        <p class="ds-label">Color Palette</p>
+        <div class="swatches">
+          <div class="swatch"><div class="sw-color" style="background:#032D60"></div><div class="sw-info"><span class="sw-name">Primary Dark</span><span class="sw-hex">#032D60</span><span class="sw-use">Hero &amp; dark section fills</span></div></div>
+          <div class="swatch"><div class="sw-color" style="background:#0D3880"></div><div class="sw-info"><span class="sw-name">Card Surface</span><span class="sw-hex">#0D3880</span><span class="sw-use">Cards on dark backgrounds</span></div></div>
+          <div class="swatch"><div class="sw-color" style="background:#0176D3"></div><div class="sw-info"><span class="sw-name">Brand Blue</span><span class="sw-hex">#0176D3</span><span class="sw-use">Primary CTAs &amp; links</span></div></div>
+          <div class="swatch"><div class="sw-color" style="background:#00A9E0"></div><div class="sw-info"><span class="sw-name">Accent Cyan</span><span class="sw-hex">#00A9E0</span><span class="sw-use">Highlight subheadings</span></div></div>
+          <div class="swatch"><div class="sw-color" style="background:#FFFFFF;outline:1px solid #C8D9EF"></div><div class="sw-info"><span class="sw-name">White</span><span class="sw-hex">#FFFFFF</span><span class="sw-use">Light sections, text on dark</span></div></div>
+          <div class="swatch"><div class="sw-color" style="background:#3E3E3C"></div><div class="sw-info"><span class="sw-name">Body Text</span><span class="sw-hex">#3E3E3C</span><span class="sw-use">Paragraphs on white</span></div></div>
+        </div>
+      </div>
+      <div class="ds-block">
+        <p class="ds-label">Typography — Plus Jakarta Sans</p>
+        <div class="type-samples">
+          <div class="type-sample" style="background:#032D60">
+            <span style="font-size:clamp(1.6rem,3.5vw,2.2rem);font-weight:800;color:#fff;letter-spacing:-0.025em;line-height:1.1">Hero Headline</span>
+            <span class="type-spec" style="color:rgba(255,255,255,0.45)">800 · 56-96px · dominant</span>
+          </div>
+          <div class="type-sample">
+            <span style="font-size:1.4rem;font-weight:800;color:#032D60;letter-spacing:-0.025em">Section Heading</span>
+            <span class="type-spec">800 · clamp(32-48px)</span>
+          </div>
+          <div class="type-sample" style="background:#032D60">
+            <span style="font-size:1rem;font-weight:600;color:#00A9E0">Accent Subtitle: Where humans and agents drive success together</span>
+            <span class="type-spec" style="color:rgba(255,255,255,0.45)">600 · 18-26px · cyan</span>
+          </div>
+          <div class="type-sample">
+            <span style="font-size:0.9rem;font-weight:400;color:#3E3E3C;line-height:1.7;max-width:360px">Body copy is relaxed and readable. Generous line-height of 1.7, max-width around 640px so lines do not stretch too wide.</span>
+            <span class="type-spec">400 · 16-18px · lh 1.7</span>
+          </div>
+        </div>
+      </div>
+      <div class="ds-block">
+        <p class="ds-label">Layout Principles</p>
+        <div class="layout-list">
+          <div class="layout-row"><div class="l-dot"></div><p>Full-width sections alternating between deep navy <strong>#032D60</strong> and white <strong>#FFFFFF</strong>. Whitespace alone separates sections, no decorative dividers.</p></div>
+          <div class="layout-row"><div class="l-dot"></div><p>Centered hero: dominant headline, cyan accent subtitle, body paragraph stacked with generous spacing</p></div>
+          <div class="layout-row"><div class="l-dot"></div><p>4-column card grid on dark sections: cards at <strong>#0D3880</strong>, <strong>16px</strong> border-radius, icon + bold title + muted body</p></div>
+          <div class="layout-row"><div class="l-dot"></div><p>50/50 split on light sections: media or visual left, headline + body + CTAs right</p></div>
+          <div class="layout-row"><div class="l-dot"></div><p>Max content width <strong>1200px</strong> centered. Section padding <strong>80-120px</strong> top and bottom.</p></div>
+          <div class="layout-row"><div class="l-dot"></div><p>Primary CTA: solid <strong>#0176D3</strong>, 8px radius. Secondary: outlined <strong>#0176D3</strong>, transparent fill.</p></div>
+        </div>
+      </div>`,
+
+    'Portfolio Website::build': `<div class="steps">
+      <div class="step">
+        <div class="step-n">1</div>
+        <div class="step-body">
+          <h4>Started with a simple scaffolded HTML page</h4>
+          <p>Asked Claude to build a single-file portfolio with sections for Hero, About, Work, AI Projects, and Contact. Clean structure with placeholder content and no styling decisions at this stage.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n">2</div>
+        <div class="step-body">
+          <h4>Applied my design system skill to restyle it</h4>
+          <p>Used <code>/salesforce-design</code> to transform the raw scaffold into a fully styled page: navy hero, alternating light and dark sections, brand blue CTAs, and Plus Jakarta Sans typography throughout.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n">3</div>
+        <div class="step-body">
+          <h4>Claude interviewed me to fill in real content</h4>
+          <p>Rather than writing all my own copy, Claude asked targeted questions about my name, role, focus areas, and contact info, then wrote the About section, Work cards, and footer copy in a tone that matched my voice.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n">4</div>
+        <div class="step-body">
+          <h4>Built out project cards as I completed each AI Builder session</h4>
+          <p>The AI Projects grid started as all "Coming Soon" placeholders. Each completed project gets a full card with its own "How I Built This" and "Documentation" popups, a living record that grows with every session.</p>
+        </div>
+      </div>
+    </div>`,
+
+    'Portfolio Website::docs': `<div class="docs-cols">
+      <div class="docs-col">
+        <h4>Techniques Used</h4>
+        <div class="docs-list">
+          <div class="docs-item"><div class="d-dot"></div><p>Single-file HTML: all CSS and JS embedded, zero build step or dependencies</p></div>
+          <div class="docs-item"><div class="d-dot"></div><p>CSS custom properties for the full design token system (colors, spacing, type)</p></div>
+          <div class="docs-item"><div class="d-dot"></div><p>Canvas 2D aurora plus particle field: pure <code>requestAnimationFrame</code>, no libraries</p></div>
+          <div class="docs-item"><div class="d-dot"></div><p>Dynamic project card rendering from a JS data array: add a card by adding one object</p></div>
+          <div class="docs-item"><div class="d-dot"></div><p>Rich popup content keyed by project title plus type, injected as HTML strings</p></div>
+          <div class="docs-item"><div class="d-dot"></div><p>Accessible modal: Escape to close, click-outside to close, aria-modal</p></div>
+          <div class="docs-item"><div class="d-dot"></div><p>Responsive CSS Grid plus <code>clamp()</code> for fluid, scale-safe typography</p></div>
+          <div class="docs-item"><div class="d-dot"></div><p>Google Fonts (Plus Jakarta Sans): the only external resource on the page</p></div>
+        </div>
+      </div>
+      <div class="docs-col">
+        <h4>Key Prompts to Build Your Own</h4>
+        <div class="docs-list">
+          <div class="docs-item"><div class="d-dot"></div>
+            <p>Extract a design system from screenshots:
+              <code>"Analyze this page and extract my design system: colors with hex codes, typography specs, layout approach, and 5 vibe words. Format as a structured design system I can paste back into Claude."</code>
+            </p>
+          </div>
+          <div class="docs-item"><div class="d-dot"></div>
+            <p>Build the initial scaffold:
+              <code>"Build me a single-page portfolio HTML file. Interview me about any info you don't have. Google Fonts only. Sections: Hero, About, Work, AI Projects grid, Contact footer."</code>
+            </p>
+          </div>
+          <div class="docs-item"><div class="d-dot"></div>
+            <p>Restyle with your design skill:
+              <code>"Use /[your-skill] to restyle my portfolio. Apply the full design system: alternating sections, typography, colors, and components."</code>
+            </p>
+          </div>
+          <div class="docs-item"><div class="d-dot"></div>
+            <p>Build out a project card:
+              <code>"Build out the [Project Name] card with a 'How I Built This' popup (visual step-by-step) and a 'Documentation' popup (techniques and key prompts)."</code>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>`
+  };
+
+  // ─── Project data ─────────────────────────────────────
+  const PROJECTS = [
+    { title: 'Design System Skill',          desc: 'A reusable AI skill for extracting design DNA from any website and applying it consistently across every build.',        live: true  },
+    { title: 'Portfolio Website',            desc: 'This site, scaffolded, styled with my design skill, and built out card by card as I complete each AI Builder session.', live: true  },
+    { title: 'Voice Guide Skill',            desc: 'An AI skill that creates structured voice guides and spoken walkthroughs.',                                              live: false },
+    { title: 'Email Manager Scheduled Task', desc: 'A scheduled automation that triages, drafts, and organizes email at set intervals.',                                     live: false },
+    { title: 'Research Presentation',        desc: 'AI-powered workflow that turns raw research into polished presentation decks.',                                          live: false },
+    { title: 'Spreadsheet Analysis',         desc: 'Automated data analysis that surfaces insights from spreadsheets on demand.',                                            live: false },
+    { title: 'Data Dashboard',               desc: 'A dynamic dashboard built with AI to visualize key metrics in real time.',                                               live: false },
+    { title: 'File Organization Process',    desc: 'An automated process that intelligently organizes and tags files by content.',                                           live: false },
+    { title: 'Custom Workflow',              desc: 'A configurable end-to-end AI workflow built for a specific recurring use case.',                                         live: false },
+  ];
+  const PLACEHOLDERS = 3;
+
+  // ─── Render cards ─────────────────────────────────────
+  const grid = document.getElementById('projects-grid');
+  const chev = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>`;
+
+  PROJECTS.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'project-card';
+    card.innerHTML = `
+      <span class="project-pill${p.live ? ' live' : ''}">${p.live ? 'Live' : 'Coming Soon'}</span>
+      <h3>${p.title}</h3>
+      <p class="project-desc">${p.desc}</p>
+      <div class="project-links">
+        <button class="project-link" data-title="${p.title}" data-type="build">${chev} How I Built This</button>
+        <button class="project-link" data-title="${p.title}" data-type="docs">${chev} Documentation</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+
+  for (let i = 0; i < PLACEHOLDERS; i++) {
+    const card = document.createElement('div');
+    card.className = 'project-card placeholder';
+    card.innerHTML = `<span class="project-pill">Future</span><h3>Coming Soon</h3><p class="project-desc">Placeholder for a future project.</p>`;
+    grid.appendChild(card);
+  }
+
+  // ─── Modal ────────────────────────────────────────────
+  const overlay  = document.getElementById('modal-overlay');
+  const ey       = document.getElementById('modal-ey');
+  const heading  = document.getElementById('modal-heading');
+  const body     = document.getElementById('modal-body');
+  const closeBtn = document.getElementById('modal-close');
+
+  function openModal(title, type) {
+    ey.textContent      = type === 'build' ? 'How I Built This' : 'Documentation';
+    heading.textContent = title;
+    body.innerHTML      = POPUP[`${title}::${type}`] || '<div class="coming-soon">Content coming soon.</div>';
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    closeBtn.focus();
+  }
+
+  function closeModal() {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  grid.addEventListener('click', e => {
+    const btn = e.target.closest('[data-title]');
+    if (btn) openModal(btn.dataset.title, btn.dataset.type);
+  });
+
+  closeBtn.addEventListener('click', closeModal);
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+</body>
+</html>
